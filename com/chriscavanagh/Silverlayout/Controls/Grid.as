@@ -213,6 +213,8 @@
 
 		public override function ArrangeOverride( finalSize : Size ) : Size 
 		{
+			if ( !rowSizes || !columnSizes ) return finalSize;
+
 			var rowDefinitions : Array = GetRowDefinitions();
 			var columnDefinitions : Array = GetColumnDefinitions();
 			var y : Number = 0;
