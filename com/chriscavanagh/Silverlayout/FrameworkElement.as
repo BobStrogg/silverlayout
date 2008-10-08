@@ -100,7 +100,11 @@
 
 		public function Measure( availableSize : Size ) : Size
 		{
-			if ( visibility.toLowerCase() == "collapsed" ) return new Size();
+			if ( visibility.toLowerCase() == "collapsed" )
+			{
+				measuredSize = null;
+				return new Size();
+			}
 
 			var doublePadding : Number = padding * 2;
 
@@ -142,8 +146,8 @@
 
 			var doublePadding : Number = padding * 2;
 			var availableSize : Size = new Size(
-				Math.max( 0, measuredSize.Width - doublePadding ),
-				Math.max( 0, measuredSize.Height - doublePadding ) );
+				Math.max( 0, ( measuredSize ? measuredSize.Width : finalSize.Width ) - doublePadding ),
+				Math.max( 0, ( measuredSize ? measuredSize.Height : finalSize.Height ) - doublePadding ) );
 			var size : Size = ArrangeOverride( availableSize );
 
 			renderSize = availableSize;
