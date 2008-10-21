@@ -1,4 +1,4 @@
-﻿package  
+﻿package com.chriscavanagh.Silverlayout.Controls
 {
 	import com.chriscavanagh.Silverlayout.*;
 	import com.chriscavanagh.Silverlayout.Controls.ContentControl;
