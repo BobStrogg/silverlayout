@@ -16,6 +16,8 @@
 		{
 			this.player = player;
 			addChild( player );
+
+			player.addEventListener( VideoPlayer.METADATA, function( event : Event ) : void { Invalidate(); } );
 		}
 
 		override public function MeasureOverride( availableSize : Size ) : Size 

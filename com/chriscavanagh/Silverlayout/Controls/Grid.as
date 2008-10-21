@@ -25,9 +25,15 @@
 
 		public override function MeasureOverride( availableSize : Size ):Size 
 		{
-			var gridSize : Size = new Size( availableSize.Width, availableSize.Height );
+			if ( ( !this.rowDefinitions || this.rowDefinitions.length < 1 )
+				&& ( !this.columnDefinitions || this.columnDefinitions.length < 1 ) )
+			{
+				return super.MeasureOverride( availableSize );
+			}
+
 			var rowDefinitions : Array = GetRowDefinitions();
 			var columnDefinitions : Array = GetColumnDefinitions();
+			var gridSize : Size = new Size( availableSize.Width, availableSize.Height );
 
 			rowSizes = new Array( Math.max( 1, rowDefinitions.length ) );
 			columnSizes = new Array( Math.max( 1, columnDefinitions.length ) );
@@ -213,38 +219,45 @@
 
 		public override function ArrangeOverride( finalSize : Size ) : Size 
 		{
-			if ( !rowSizes || !columnSizes ) return finalSize;
-
-			var rowDefinitions : Array = GetRowDefinitions();
-			var columnDefinitions : Array = GetColumnDefinitions();
-			var y : Number = 0;
-
-			// Arrange rows and columns
-			for ( var rowIndex : int = 0; rowIndex < rowDefinitions.length; ++ rowIndex )
+			if ( ( !rowDefinitions || rowDefinitions.length < 1 )
+				&& ( !columnDefinitions || columnDefinitions.length < 1 ) )
 			{
-				var x : Number = 0;
+				return super.ArrangeOverride( finalSize );
+			}
 
-				for ( var columnIndex : int = 0; columnIndex < columnDefinitions.length; ++ columnIndex )
+			if ( rowSizes && columnSizes )
+			{
+				var rowDefinitions : Array = GetRowDefinitions();
+				var columnDefinitions : Array = GetColumnDefinitions();
+				var y : Number = 0;
+
+				// Arrange rows and columns
+				for ( var rowIndex : int = 0; rowIndex < rowDefinitions.length; ++ rowIndex )
 				{
-					var children : Array = GetChildren( rowIndex, columnIndex );
+					var x : Number = 0;
 
-					for ( var index : int = 0; index < children.length; ++ index )
+					for ( var columnIndex : int = 0; columnIndex < columnDefinitions.length; ++ columnIndex )
 					{
-						var child : FrameworkElement = children[ index ];
-						var cellSize : Size = new Size( Zero( columnSizes[ columnIndex ] ), Zero( rowSizes[ rowIndex ] ) );
+						var children : Array = GetChildren( rowIndex, columnIndex );
 
-						var size : Size = child.Arrange( cellSize );
+						for ( var index : int = 0; index < children.length; ++ index )
+						{
+							var child : FrameworkElement = children[ index ];
+							var cellSize : Size = new Size( Zero( columnSizes[ columnIndex ] ), Zero( rowSizes[ rowIndex ] ) );
 
-						var h : Extent = GetExtent( child.HorizontalAlignment, size.Width, cellSize.Width );
-						var v : Extent = GetExtent( child.VerticalAlignment, size.Height, cellSize.Height );
+							var size : Size = child.Arrange( cellSize );
 
-						child.Offset = new Point( x + h.Offset, y + v.Offset );
+							var h : Extent = GetExtent( child.HorizontalAlignment, size.Width, cellSize.Width );
+							var v : Extent = GetExtent( child.VerticalAlignment, size.Height, cellSize.Height );
+
+							child.Offset = new Point( x + h.Offset, y + v.Offset );
+						}
+
+						x += Zero( columnSizes[ columnIndex ] );
 					}
 
-					x += Zero( columnSizes[ columnIndex ] );
+					y += Zero( rowSizes[ rowIndex ] );
 				}
-
-				y += Zero( rowSizes[ rowIndex ] );
 			}
 
 			return finalSize;

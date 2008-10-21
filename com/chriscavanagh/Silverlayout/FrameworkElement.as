@@ -16,17 +16,17 @@
 	{
 		private static var suspendCount : int = 0;
 
-		private var horizontalAlignment : String = "Stretch";
-		private var verticalAlignment : String = "Stretch";
-		private var padding : Number = 0;
-		private var desiredWidth : * = null;
-		private var desiredHeight : * = null;
+		private var horizontalAlignment : String;
+		private var verticalAlignment : String;
+		private var padding : Number;
+		private var desiredWidth : *;
+		private var desiredHeight : *;
 		private var background : *;
 		private var backgroundAlpha : Number;
-		private var opacity : Number = 1;
-		private var visibility : String = "Visible";
-		private var gridColumn : int = 0;
-		private var gridRow : int = 0;
+		private var opacity : Number;
+		private var visibility : String;
+		private var gridColumn : int;
+		private var gridRow : int;
 
 		private var measuredSize : Size;
 		private var renderSize : Size;
@@ -37,6 +37,15 @@
 
 		public function FrameworkElement()
 		{
+			horizontalAlignment = "Stretch";
+			verticalAlignment = "Stretch";
+			padding = 0;
+			desiredWidth = null;
+			desiredHeight = null;
+			opacity = 1;
+			visibility = "Visible";
+			gridColumn = 0;
+			gridRow = 0;
 			rendered = false;
 			alpha = 0;
 			background = null;
