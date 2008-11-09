@@ -166,6 +166,8 @@
 
 		public function ArrangeOverride( finalSize : Size ) : Size
 		{
+			this.visible = ( visibility.toLowerCase() == "visible" );
+
 			for ( var index : int = 0; index < numChildren; ++ index )
 			{
 				var child : FrameworkElement = getChildAt( index ) as FrameworkElement;

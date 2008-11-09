@@ -7,6 +7,7 @@
 	import flash.display.Graphics;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	/**
@@ -15,6 +16,8 @@
 	*/
 	public class Slider extends FrameworkElement
 	{
+		public static var VALUECHANGEBEGIN : String = "VALUECHANGEBEGIN";
+		public static var VALUECHANGEEND : String = "VALUECHANGEEND";
 		public static var VALUECHANGED : String = "VALUECHANGED";
 
 		private var bar : VolumeBar;
@@ -41,30 +44,37 @@
 
 			var onClick : Function = function( event : MouseEvent ) : void
 			{
-				thumb.x = event.localX + 1;
-				OnValueChanged( event.localX / event.target.width );
+				dispatchEvent( new Event( VALUECHANGEBEGIN ) );
+
+				var local : Point = slider.globalToLocal( new Point( event.stageX, event.stageY ) );
+				var newValue : Number = ( local.x - slider.Padding ) / ( slider.RenderSize.Width - ( slider.Padding * 2 ) );
+				OnValueChanged( newValue );
+
+				dispatchEvent( new Event( VALUECHANGEEND ) );
 			};
 
 			slider.addEventListener( MouseEvent.CLICK, onClick );
 
 			thumb = CreateThumb();
-			addChild( new ContentControl( thumb ) );
+			var thumbContent : ContentControl = new ContentControl( thumb );
+			thumbContent.VerticalAlignment = "Center";
+			addChild( thumbContent );
 		}
 
 		override protected function OnRenderOverride(event:Event):void 
 		{
 			super.OnRenderOverride(event);
 
-			if ( bar && slider && slider.RenderSize ) bar.width = slider.RenderSize.Width;
+			if ( bar && slider && slider.RenderSize )
+			{
+				bar.width = slider.RenderSize.Width;
+				thumb.x = slider.RenderSize.Width * this.value;
+			}
 		}
 
 		private function CreateThumb() : VolumeThumb
 		{
 			var thumb : VolumeThumb = new VolumeThumb();
-			thumb.width = 10;
-			thumb.height = 20;
-			thumb.x = 0;
-			thumb.y = 1;
 			thumb.buttonMode = true;
 
 			var dragging : Boolean = false;
@@ -76,20 +86,23 @@
 				stage.removeEventListener( MouseEvent.MOUSE_UP, onStopDrag );
 				thumb.stopDrag();
 				dragging = false;
+
+				dispatchEvent( new Event( VALUECHANGEEND ) );
 			};
 
 			var onStartDrag : Function = function( event : MouseEvent ) : void
 			{
+				dispatchEvent( new Event( VALUECHANGEBEGIN ) );
 				stage.addEventListener( MouseEvent.MOUSE_MOVE, onMove );
 				stage.addEventListener( MouseEvent.MOUSE_UP, onStopDrag );
 
-				thumb.startDrag( false, new Rectangle( 0, thumb.y, slider.width, 0 ) );
+				thumb.startDrag( false, new Rectangle( 0, thumb.y, slider.RenderSize.Width, 0 ) );
 				dragging = true;
 			};
 
 			var onMove : Function = function( event : MouseEvent ) : void
 			{
-				OnValueChanged( thumb.x / slider.width );
+				OnValueChanged( thumb.x / slider.RenderSize.Width );
 			};
 
 			thumb.addEventListener( MouseEvent.MOUSE_DOWN, onStartDrag );
@@ -114,7 +127,6 @@
 		public function set Value( value : Number ) : void
 		{
 			this.value = ( value - minimum ) / ( maximum - minimum );
-			thumb.x = slider.width * value;
 			Invalidate();
 		}
 	}
