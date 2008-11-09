@@ -171,12 +171,16 @@
 
 		private function GetRowDefinitions() : Array
 		{
-			return ( rowDefinitions.length > 0 ) ? rowDefinitions : [ new RowDefinition() ];
+			return ( rowDefinitions.length > 0 )
+				? rowDefinitions
+				: [ new RowDefinition( VerticalAlignment == "Stretch" ? null : "Auto" ) ];
 		}
 
 		private function GetColumnDefinitions() : Array
 		{
-			return ( columnDefinitions.length > 0 ) ? columnDefinitions : [ new ColumnDefinition() ];
+			return ( columnDefinitions.length > 0 )
+				? columnDefinitions
+				: [ new ColumnDefinition( HorizontalAlignment == "Stretch" ? null : "Auto" ) ];
 		}
 
 		private function MeasureCell( rowIndex : int, columnIndex : int, availableSize : Size ) : Size
