@@ -1,0 +1,1 @@
+Silverlayout is a simple Actionscript 3 layout library based largely on WPF / Silverlight.  It includes useful layout / visual controls like Grid, StackPanel, TextBlock and Image.
